@@ -1,121 +1,154 @@
 import { Filter, Search } from "lucide-react";
 import type { ICategory } from "../types";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
-export function FiltersPanel({ categories }: { categories: ICategory[] }) {
+type Props = {
+  categories: ICategory[];
+};
+
+export function FiltersPanel({ categories }: Props) {
   return (
     <aside
       className="
-        bg-white rounded-xl shadow-sm p-6
+        bg-white rounded-xl shadow-sm p-4
         lg:sticky lg:top-24 lg:h-fit lg:max-h-[calc(100dvh-7rem)]
         lg:overflow-auto
       "
     >
-      {/* Título */}
-      <div className="flex items-center gap-2 mb-6">
-        <Filter size={18} className="text-teal-700" />
-        <h3 className="text-lg font-bold text-gray-800">Filtros</h3>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Filter size={18} className="text-teal-700" />
+          <h3 className="text-base font-semibold text-gray-900">Filtros</h3>
+        </div>
+        <Button variant="ghost" className="h-8 px-3 text-sm">
+          Limpiar
+        </Button>
       </div>
+
+      <Separator className="mb-4" />
 
       <div className="space-y-6">
         {/* Buscar */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">
+          <Label htmlFor="search" className="text-sm">
             Buscar
-          </label>
+          </Label>
           <div className="relative">
             <Search
               size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
-            <input
-              type="text"
+            <Input
+              id="search"
               placeholder="Nombre o descripción"
-              className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg 
-                         focus:ring-2 focus:ring-teal-500 focus:border-transparent
-                         text-sm"
+              className="pl-9 h-10"
             />
           </div>
         </div>
 
         {/* Categoría */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">
+          <Label htmlFor="category" className="text-sm">
             Categoría
-          </label>
-          <select
-            className="w-full p-2.5 border border-gray-200 rounded-lg text-sm 
-                       focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-          >
-            <option value="">Todas</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          </Label>
+          <Select>
+            <SelectTrigger id="category" className="h-10 w-full">
+              <SelectValue placeholder="Selecciona una categoría" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c.id} value={String(c.id)}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
+
+        <Separator />
 
         {/* Precio */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">
-            Precio
-          </label>
-          <div className="flex flex-row items-center gap-2 md:flex-col md:items-stretch md:gap-3"> 
-            <input
-              type="number"
-              placeholder="Mín."
-              className="p-2.5 border border-gray-200 rounded-lg text-sm
-                         focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-            />
-            <span className="text-gray-400">—</span>
-            <input
-              type="number"
-              placeholder="Máx."
-              className="p-2.5 border border-gray-200 rounded-lg text-sm
-                         focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-            />
+          <Label className="text-sm">Precio</Label>
+          <div className="grid grid-cols-2 gap-2 [@media(max-width:420px)]:grid-cols-1">
+            <div className="space-y-1">
+              <Label
+                htmlFor="price-min"
+                className="text-xs text-muted-foreground"
+              >
+                Mín.
+              </Label>
+              <Input
+                id="price-min"
+                type="number"
+                className="h-10"
+                placeholder="0"
+                min={0}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label
+                htmlFor="price-max"
+                className="text-xs text-muted-foreground"
+              >
+                Máx.
+              </Label>
+              <Input
+                id="price-max"
+                type="number"
+                className="h-10"
+                placeholder="999"
+              />
+            </div>
           </div>
         </div>
 
         {/* Stock */}
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            className="w-4 h-4 text-teal-600 border-gray-300 rounded
-                       focus:ring-teal-500"
-          />
-          <span className="text-sm font-medium text-gray-700">
+        <div className="flex items-center gap-2">
+          <Checkbox id="only-stock" />
+          <Label htmlFor="only-stock" className="text-sm">
             Solo disponibles
-          </span>
-        </label>
+          </Label>
+        </div>
+
+        <Separator />
 
         {/* Ordenar */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">
+          <Label htmlFor="sortby" className="text-sm">
             Ordenar por
-          </label>
-          <select
-            className="w-full p-2.5 border border-gray-200 rounded-lg text-sm 
-                       focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-          >
-            <option value="">Relevancia</option>
-            <option value="priceAsc">Precio: menor a mayor</option>
-            <option value="priceDesc">Precio: mayor a menor</option>
-            <option value="nameAsc">Nombre: A → Z</option>
-            <option value="nameDesc">Nombre: Z → A</option>
-          </select>
+          </Label>
+          <Select>
+            <SelectTrigger id="sortby" className="h-10 w-full">
+              <SelectValue placeholder="Relevancia" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="relevance">Relevancia</SelectItem>
+              <SelectItem value="priceAsc">Precio: menor a mayor</SelectItem>
+              <SelectItem value="priceDesc">Precio: mayor a menor</SelectItem>
+              <SelectItem value="nameAsc">Nombre: A → Z</SelectItem>
+              <SelectItem value="nameDesc">Nombre: Z → A</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Botón limpiar */}
-        <div className="pt-2">
-          <button
-            className="w-full px-4 py-2.5 border border-gray-200 text-gray-700 
-                       rounded-lg hover:border-teal-500 hover:text-teal-600 
-                       transition-colors font-semibold text-sm"
-          >
-            Limpiar
-          </button>
-        </div>
+        {/* Botón Limpiar fallback */}
+        <Button variant="outline" className="w-full h-10">
+          Aplicar filtros
+        </Button>
       </div>
     </aside>
   );

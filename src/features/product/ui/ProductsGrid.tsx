@@ -1,7 +1,13 @@
 import type { IProduct } from "../types";
 import { ProductCard } from "./ProductCard";
 
-export function ProductsGrid({ items, onAdd }:{ items: IProduct[]; onAdd:(p:IProduct)=>void }) {
+export function ProductsGrid({
+  items,
+  onAdd,
+}: {
+  items: IProduct[];
+  onAdd: (p: IProduct) => void;
+}) {
   if (!items.length) {
     return (
       <div className="text-center py-16">
@@ -11,15 +17,13 @@ export function ProductsGrid({ items, onAdd }:{ items: IProduct[]; onAdd:(p:IPro
   }
 
   return (
-    <div className="
-      grid grid-cols-1
-      sm:grid-cols-2
-      lg:grid-cols-3
-      xl:grid-cols-3
-      2xl:grid-cols-4
-      gap-8
-    ">
-      {items.map(p => <ProductCard key={p.id} product={p} onAdd={onAdd} />)}
+    <div
+      role="list"
+      className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6 md:gap-8 items-stretch content-start"
+    >
+      {items.map((p) => (
+        <ProductCard key={p.id} product={p} onAdd={onAdd} />
+      ))}
     </div>
   );
 }

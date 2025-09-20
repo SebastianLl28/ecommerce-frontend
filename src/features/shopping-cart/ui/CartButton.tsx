@@ -1,13 +1,19 @@
-import { ShoppingCart } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { ShoppingCart } from "lucide-react";
+import type { CartButtonProps } from "../types";
 
-export function CartButton({ count = 0, onClick }: { count?: number; onClick?: () => void }) {
+export function CartButton({ count = 0, onClick }: CartButtonProps) {
   return (
-    <button onClick={onClick}
-      className="relative bg-teal-700 hover:bg-teal-600 text-white px-5 py-3 rounded-lg font-semibold
-                 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+    <Button
+      onClick={onClick}
+      size="xl"
+      className="relative flex items-center gap-2 font-semibold hover:-translate-y-0.5 transition-transform"
+    >
       <ShoppingCart size={18} />
       <span>Ver Carrito</span>
-      <span className="ml-1 rounded-full bg-white/20 px-2 py-0.5 text-sm">{count}</span>
-    </button>
+      <span className="ml-1 rounded-full bg-primary-foreground/20 px-2 py-0.5 text-sm">
+        {count}
+      </span>
+    </Button>
   );
 }
