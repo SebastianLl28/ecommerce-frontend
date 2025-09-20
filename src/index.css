@@ -118,3 +118,6 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@keyframes slideIn { from { transform: translateX(-8%); opacity: .6 } to { transform: translateX(0); opacity: 1 } }

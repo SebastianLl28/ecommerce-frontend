@@ -3,5 +3,5 @@ import { getProducts } from './api'
 
 export const useGetProducts = () => useQuery({
   queryKey: ['products'],
-  queryFn: getProducts
+  queryFn: getProducts,
 })
