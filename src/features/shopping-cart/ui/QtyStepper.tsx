@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Minus, Plus } from "lucide-react";
 
 interface QtyStepperProps {
   value: number;
-  onDecrease: () => void;
-  onIncrease: () => void;
-  onInput?: (value: number) => void;
+  productId: number;
+  onDecrease?: (productId: number) => void;
+  onIncrease?: (productId: number) => void;
+  onInput?: (value: number, productId: number) => void;
+  className?: string;
+  inputClassName?: string;
 }
 
 const QtyStepper = ({
@@ -13,34 +16,50 @@ const QtyStepper = ({
   onDecrease,
   onIncrease,
   onInput,
+  productId,
 }: QtyStepperProps) => {
+  const handleDecrease = () => {
+    if (onDecrease) {
+      onDecrease(productId);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (onIncrease) {
+      onIncrease(productId);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (onInput) {
+      onInput(value, productId);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="outline"
-        size="icon"
-        className="h-9 w-9"
-        onClick={onDecrease}
-        aria-label="Disminuir"
+    <div className="flex items-center border border-gray-300 rounded-lg bg-white">
+      <button
+        onClick={handleDecrease}
+        className="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-l-lg transition-colors"
       >
-        −
-      </Button>
-      <Input
+        <Minus className="h-4 w-4" />
+      </button>
+      <input
         type="number"
         value={value}
-        onChange={(e) => onInput?.(Number(e.target.value || 1))}
-        className="w-14 text-center"
-        min={1}
+        onChange={handleInputChange}
+        className={cn(
+          "w-16 h-10 text-center border-0 focus:outline-none focus:ring-0 bg-transparent font-medium"
+        )}
+        min="1"
       />
-      <Button
-        variant="outline"
-        size="icon"
-        className="h-9 w-9"
-        onClick={onIncrease}
-        aria-label="Aumentar"
+      <button
+        onClick={handleIncrease}
+        className="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-r-lg transition-colors"
       >
-        +
-      </Button>
+        <Plus className="h-4 w-4" />
+      </button>
     </div>
   );
 };

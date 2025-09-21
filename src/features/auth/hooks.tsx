@@ -22,7 +22,7 @@ export const usePostLogin = () => {
       toast.error(response.message);
     },
     onError: (error) => {
-      console.error("Login error:", error);
+      toast.error(error.message);
     },
   });
 };

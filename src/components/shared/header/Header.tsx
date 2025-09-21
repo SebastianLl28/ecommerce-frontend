@@ -15,7 +15,6 @@ const Header = () => {
   useEffect(() => {
     if (isSuccess && cartInfo.success) {
       setCartCount(cartInfo.data!.itemCount);
-      console.log("entro");
     }
   }, [cartInfo, isSuccess, setCartCount]);
 

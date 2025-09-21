@@ -10,13 +10,14 @@ interface CartItem {
   productName: string;
   productPrice: number;
   quantity: number;
+  subtotal: number;
 }
 
 type CartItemResponse = Response<CartItem[]>;
 
 interface CartInfo {
   cartItems: CartItem[];
-  totalItems: number;
+  total: number;
   itemCount: number;
   message: string;
 }
@@ -34,4 +35,5 @@ export type {
   CartItemResponse,
   CartInfoResponse,
   AddToCartRequest,
+  CartInfo,
 };

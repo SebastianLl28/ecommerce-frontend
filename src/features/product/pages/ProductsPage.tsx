@@ -6,11 +6,13 @@ import { useGetProducts } from "../hooks";
 import { FiltersPanel } from "../ui/FiltersPanel";
 import { ProductsGrid } from "../ui/ProductsGrid";
 import type { IProduct } from "../types";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductsPage() {
   const { mutate } = usePostAddToCart();
   const { data, isLoading, isError, isSuccess } = useGetProducts();
   const cartCount = useCartCount();
+  const navigate = useNavigate();
 
   const addToCart = (product: IProduct) => {
     mutate({ productId: product.id, quantity: 1 });
@@ -46,7 +48,10 @@ export default function ProductsPage() {
       </div>
 
       <div className="lg:hidden">
-        <MobileCartButton count={cartCount} />
+        <MobileCartButton
+          count={cartCount}
+          onClick={() => navigate("/shopping-cart")}
+        />
       </div>
     </div>
   );
