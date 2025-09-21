@@ -18,7 +18,7 @@ export function ProductCard({
       <div className="p-4 bg-white flex items-center justify-center">
         <div className="w-full h-56 flex items-center justify-center">
           <img
-            src={product.image || "/api/placeholder/400/200"}
+            src={product.imageUrl || "/api/placeholder/400/200"}
             alt={product.name}
             className="max-h-full object-contain"
           />

@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { usePostLogout } from "../hooks";
 
 const LogoutButton = () => {
-  const navigate = useNavigate();
+  const { mutate: logout } = usePostLogout();
 
   const handleLogout = () => {
-    // Lógica de cierre de sesión
-    navigate("/");
+    logout();
   };
 
   return (

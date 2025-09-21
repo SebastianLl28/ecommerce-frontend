@@ -1,14 +1,20 @@
 import MobileCartButton from "@/features/shopping-cart/ui/MobileCartButton";
+import { categories } from "@/config/constants";
+import { useCartCount } from "@/store/useCartStore";
+import { usePostAddToCart } from "@/features/shopping-cart/hooks";
 import { useGetProducts } from "../hooks";
 import { FiltersPanel } from "../ui/FiltersPanel";
 import { ProductsGrid } from "../ui/ProductsGrid";
-import { categories } from "@/config/constants";
-import { useAddToCart, useCartCount } from "@/store/useCartStore";
+import type { IProduct } from "../types";
 
 export default function ProductsPage() {
-  const { data = [], isLoading, isError } = useGetProducts();
-  const addToCart = useAddToCart();
+  const { mutate } = usePostAddToCart();
+  const { data, isLoading, isError, isSuccess } = useGetProducts();
   const cartCount = useCartCount();
+
+  const addToCart = (product: IProduct) => {
+    mutate({ productId: product.id, quantity: 1 });
+  };
 
   return (
     <div className="max-w-[1800px] mx-auto px-8 pt-8 pb-16">
@@ -24,7 +30,7 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {isLoading ? (
+          {isLoading && (
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-8">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div
@@ -33,9 +39,9 @@ export default function ProductsPage() {
                 />
               ))}
             </div>
-          ) : (
-            <ProductsGrid items={data} onAdd={addToCart} />
           )}
+
+          {isSuccess && <ProductsGrid items={data.data!} onAdd={addToCart} />}
         </section>
       </div>
 

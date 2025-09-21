@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { testUsers } from "@/config/constants";
-import { useNavigate } from "react-router-dom";
+import { usePostLogin } from "../hooks";
 
 const LoginPage = () => {
   const form = useForm<FormSchemaType>({
@@ -22,14 +22,10 @@ const LoginPage = () => {
     defaultValues: { email: "", password: "" },
   });
 
-  const navigate = useNavigate();
+  const { mutate: login } = usePostLogin();
 
   function onSubmit(data: FormSchemaType) {
-    const testUser = testUsers.find(
-      (u) => u.email === data.email && u.password === data.password
-    );
-    if (!testUser) return;
-    navigate("/products");
+    login(data);
   }
 
   const handleTestUserClick = (email: string, password: string) => {

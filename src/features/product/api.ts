@@ -1,6 +1,9 @@
-import apiClient from "@/lib/axios"
-import type { IProduct } from "./types"
+import apiClient from "@/lib/axios";
+import type { AddToCartRequest, ProductResponse } from "./types";
+import type { CartInfoResponse } from "../shopping-cart/types";
 
 export const getProducts = async () => {
-  return await apiClient.get<IProduct[]>("/products").then(res => res.data) 
-}
+  return await apiClient
+    .get<ProductResponse>("/products")
+    .then((res) => res.data);
+};
