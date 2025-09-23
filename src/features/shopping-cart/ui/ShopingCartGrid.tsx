@@ -66,7 +66,7 @@ const ShopingCartGrid = ({
           <ShoppingCartFooter
             displayTotal={cartTotal}
             onClear={onClearCart}
-            // onCheckout={handleCheckout}
+            onCheckout={() => navigate("/checkout")}
           />
         </div>
       )}

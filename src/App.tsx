@@ -3,6 +3,9 @@ import ProductsPage from "./features/product/pages/ProductsPage";
 import LoginPage from "./features/auth/pages/LoginPage";
 import MainLayout from "./components/layout/main/MainLayout";
 import ShoppingCartPage from "./features/shopping-cart/pages/ShoppingCartPage";
+import CheckoutPage from "./features/checkout/pages/CheckoutPage";
+import OrdersListPage from "./features/orders/OrdersListPage";
+import OrderSuccessPage from "./features/orders/OrderSuccessPage";
 
 const App = () => {
   return (
@@ -11,6 +14,9 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/shopping-cart" element={<ShoppingCartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/orders" element={<OrdersListPage />} />
+          <Route path="/orders/success" element={<OrderSuccessPage />} />
         </Route>
 
         <Route path="/" index element={<LoginPage />} />
