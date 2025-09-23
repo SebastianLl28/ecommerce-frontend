@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Search, Eye, Package, Filter } from "lucide-react";
-import { useGetOrders } from "./hooks";
+import { useGetOrders } from "../hooks";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 

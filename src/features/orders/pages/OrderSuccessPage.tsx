@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useGetOrder } from "./hooks";
+import { useGetOrder } from "../hooks";
 import { money } from "@/lib/utils";
 
 // --- mocks para que rinda sin props ---

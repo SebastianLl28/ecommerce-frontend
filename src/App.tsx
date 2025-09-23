@@ -4,8 +4,8 @@ import LoginPage from "./features/auth/pages/LoginPage";
 import MainLayout from "./components/layout/main/MainLayout";
 import ShoppingCartPage from "./features/shopping-cart/pages/ShoppingCartPage";
 import CheckoutPage from "./features/checkout/pages/CheckoutPage";
-import OrdersListPage from "./features/orders/OrdersListPage";
-import OrderSuccessPage from "./features/orders/OrderSuccessPage";
+import OrdersListPage from "./features/orders/pages/OrdersListPage";
+import OrderSuccessPage from "./features/orders/pages/OrderSuccessPage";
 
 const App = () => {
   return (
