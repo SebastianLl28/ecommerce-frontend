@@ -8,6 +8,7 @@ import {
   postUpdateCartItem,
 } from "./api";
 import { useCartCount, useSetCartCount } from "@/store/useCartStore";
+import { toast } from "sonner";
 
 export const useGetCartItems = () =>
   useQuery({
@@ -67,9 +68,14 @@ export const useUpdateCartItem = () => {
   return useMutation({
     mutationKey: ["updateCartItem"],
     mutationFn: postUpdateCartItem,
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
     },
   });
 };
