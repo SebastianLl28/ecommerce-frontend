@@ -2,34 +2,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { mockTotals } from "@/config/constants";
-
-function money(v: number) {
-  return new Intl.NumberFormat("es-PE", {
-    style: "currency",
-    currency: "PEN",
-  }).format(v);
-}
+import { money } from "@/lib/utils";
 
 type Totals = {
-  items: number;
+  itemCount: number;
   subTotal: number;
-  shipping: number;
+  shipping?: number;
   discount?: number;
   taxes?: number;
 };
 
+interface OrderSummaryProps {
+  totals?: Partial<Totals>;
+  onPlaceOrder?: () => void;
+}
+
 export default function OrderSummary({
   totals,
   onPlaceOrder,
-}: {
-  totals?: Partial<Totals>;
-  onPlaceOrder?: () => void;
-}) {
+}: OrderSummaryProps) {
   const t = { ...mockTotals, ...totals };
-  const grand = Math.max(
-    0,
-    t.subTotal + (t.taxes ?? 0) + t.shipping - (t.discount ?? 0)
-  );
 
   return (
     <Card className="rounded-xl">
@@ -38,17 +30,14 @@ export default function OrderSummary({
 
         <div className="space-y-2 text-sm">
           <Row
-            label={`Subtotal (${t.items} ítems)`}
+            label={`Subtotal (${t.itemCount} ítems)`}
             value={money(t.subTotal)}
           />
           {!!t.discount && (
             <Row label="Descuento" value={`- ${money(t.discount)}`} />
           )}
           {!!t.taxes && <Row label="Impuestos" value={money(t.taxes)} />}
-          <Row
-            label="Envío"
-            value={t.shipping ? money(t.shipping) : "Gratis"}
-          />
+          <Row label="Envío" value="Gratis" />
         </div>
 
         <Separator className="my-4" />
@@ -56,7 +45,7 @@ export default function OrderSummary({
         <div className="flex items-center justify-between">
           <span className="text-base font-semibold">Total a pagar</span>
           <span className="text-2xl font-extrabold tabular-nums">
-            {money(grand)}
+            {money(t.subTotal)}
           </span>
         </div>
 

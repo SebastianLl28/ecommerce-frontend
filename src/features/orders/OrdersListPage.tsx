@@ -3,54 +3,57 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Search, Eye, Package, Filter } from "lucide-react";
+import { useGetOrders } from "./hooks";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
-// --- mocks para render sin props ---
-const mockOrders = [
-  {
-    id: "ORD-2025-000123",
-    date: "2025-09-20T12:30:00Z",
-    items: 3,
-    total: 45400,
-    status: "En preparación",
-  },
-  {
-    id: "ORD-2025-000122",
-    date: "2025-09-10T09:15:00Z",
-    items: 1,
-    total: 3500,
-    status: "Entregado",
-  },
-  {
-    id: "ORD-2025-000121",
-    date: "2025-08-28T18:45:00Z",
-    items: 2,
-    total: 5600,
-    status: "En tránsito",
-  },
-];
 const money = (v: number) =>
   new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" }).format(
     v
   );
 
-type OrderRow = {
-  id: string;
-  date: string;
-  items: number;
-  total: number;
-  status: string;
-};
+// Opcional: mapea status del backend a un badge legible
+function statusBadge(status?: string) {
+  console.log(status);
+  return <Badge variant="outline">Success</Badge>;
+  // const s = (status ?? "").toUpperCase();
+  // switch (s) {
+  //   case "DELIVERED":
+  //   case "ENTREGADO":
+  //     return (
+  //       <Badge className="bg-emerald-600 hover:bg-emerald-600">Entregado</Badge>
+  //     );
+  //   case "IN_TRANSIT":
+  //   case "EN_TRANSITO":
+  //     return <Badge variant="secondary">En tránsito</Badge>;
+  //   case "PREPARING":
+  //   case "EN_PREPARACION":
+  //     return <Badge variant="secondary">En preparación</Badge>;
+  //   case "PENDING":
+  //   default:
+  //     return <Badge variant="outline">Pendiente</Badge>;
+  // }
+}
+
+// Convierte id numérico a ORD-00000005
+const formatOrderId = (id?: number | string) =>
+  typeof id === "number" ? `ORD-${String(id).padStart(8, "0")}` : id ?? "—";
 
 export default function OrdersListPage({
-  orders,
-  onView,
   onFilter,
 }: {
-  orders?: OrderRow[];
-  onView?: (id: string) => void;
   onFilter?: () => void;
 }) {
-  const list = orders?.length ? orders : mockOrders;
+  const { data, isLoading, isError } = useGetOrders();
+
+  // La API te devuelve: data.data.content[]
+  const list = useMemo(() => data?.data?.content ?? [], [data]);
+
+  const navigate = useNavigate();
+
+  const onView = (id: number) => {
+    navigate(`/orders/success/${id}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -86,43 +89,84 @@ export default function OrdersListPage({
           </CardContent>
         </Card>
 
+        {/* Estados: loading / error / vacío */}
+        {isLoading && (
+          <Card className="rounded-xl">
+            <CardContent className="p-6">
+              <p className="text-sm text-muted-foreground">Cargando pedidos…</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {isError && !isLoading && (
+          <Card className="rounded-xl">
+            <CardContent className="p-6">
+              <p className="text-sm text-red-600">
+                No se pudieron cargar los pedidos.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {!isLoading && !isError && list.length === 0 && (
+          <Card className="rounded-xl">
+            <CardContent className="p-6">
+              <p className="text-sm text-muted-foreground">
+                Aún no tienes pedidos.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Tabla simple responsiva */}
-        <div className="space-y-4">
-          {list.map((o) => (
-            <Card key={o.id} className="rounded-xl">
-              <CardContent className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4">
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{o.id}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(o.date).toLocaleString()}
-                    </p>
-                  </div>
+        {!isLoading && !isError && list.length > 0 && (
+          <div className="space-y-4">
+            {list.map((o) => (
+              <Card key={o.id} className="rounded-xl">
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4">
+                    {/* ID y fecha */}
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">
+                        {formatOrderId(o.id)}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(o.orderDate).toLocaleString()}
+                      </p>
+                    </div>
 
-                  <div className="text-sm text-muted-foreground">
-                    Ítems: <span className="font-medium">{o.items}</span>
-                  </div>
-                  <div className="font-semibold tabular-nums">
-                    {money(o.total)}
-                  </div>
-                  <div>
-                    <Badge variant="secondary">{o.status}</Badge>
-                  </div>
+                    {/* Ítems */}
+                    <div className="text-sm text-muted-foreground">
+                      Ítems:{" "}
+                      <span className="font-medium">
+                        {Array.isArray(o.orderItems) ? o.orderItems.length : 0}
+                      </span>
+                    </div>
 
-                  <div className="flex justify-start sm:justify-end">
-                    <Button
-                      size="sm"
-                      className="gap-2 min-w-[120px]"
-                      onClick={() => onView?.(o.id)}
-                    >
-                      <Eye className="h-4 w-4" /> Ver detalle
-                    </Button>
+                    {/* Total */}
+                    <div className="font-semibold tabular-nums">
+                      {money(o.totalAmount ?? 0)}
+                    </div>
+
+                    {/* Estado */}
+                    <div>{statusBadge(o.status)}</div>
+
+                    {/* Acción */}
+                    <div className="flex justify-start sm:justify-end">
+                      <Button
+                        size="sm"
+                        className="gap-2 min-w-[120px]"
+                        onClick={() => onView(o.id)}
+                      >
+                        <Eye className="h-4 w-4" /> Ver detalle
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {/* Pie / separación */}
         <Separator className="my-8" />

@@ -24,10 +24,13 @@ export const usePostAddToCart = () => {
   return useMutation({
     mutationKey: ["addToCart"],
     mutationFn: postAddToCart,
-    onSuccess: () => {
-      const previousCartCount = cartCount;
-      setCartCount(previousCartCount + 1);
-      queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+    onSuccess: (response) => {
+      toast.success(response.message);
+      if (response.success) {
+        const previousCartCount = cartCount;
+        setCartCount(previousCartCount + 1);
+        queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+      }
     },
   });
 };

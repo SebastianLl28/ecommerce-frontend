@@ -2,7 +2,10 @@ import { CheckCircle2, ArrowRight, Package, Receipt, Home } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useGetOrder } from "./hooks";
+import { money } from "@/lib/utils";
 
 // --- mocks para que rinda sin props ---
 const mockOrder = {
@@ -15,10 +18,6 @@ const mockOrder = {
     { id: 2, name: "Scott Aspect 950", qty: 1, unitPrice: 3500 },
   ],
 };
-const money = (v: number) =>
-  new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" }).format(
-    v
-  );
 
 type OrderItem = { id: number; name: string; qty: number; unitPrice: number };
 type OrderInfo = {
@@ -37,8 +36,33 @@ export default function OrderSuccessPage({ order }: OrderSuccessPageProps) {
   const o = { ...mockOrder, ...order };
 
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (!id) {
+      navigate("/orders");
+    }
+  }, [id, navigate]);
+
+  const {
+    data: orderResponse,
+    isSuccess,
+    isLoading,
+  } = useGetOrder(Number(id) || 0);
+
   const onGoOrders = () => navigate("/orders");
   const onGoHome = () => navigate("/products");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-muted-foreground">Cargando detalles...</p>
+      </div>
+    );
+  }
+
+  const orderId = orderResponse?.data?.id || 0;
+  const formattedOrderId = `ORD-${String(orderId).padStart(8, "0")}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,8 +79,13 @@ export default function OrderSuccessPage({ order }: OrderSuccessPageProps) {
           <CardContent className="p-6 space-y-6">
             {/* Resumen arriba */}
             <div className="grid sm:grid-cols-3 gap-6">
-              <Info label="N.º de pedido" value={o.id} />
-              <Info label="Fecha" value={new Date(o.date).toLocaleString()} />
+              <Info label="N.º de pedido" value={formattedOrderId} />
+              <Info
+                label="Fecha"
+                value={new Date(
+                  orderResponse?.data?.orderDate || o.date
+                ).toLocaleString()}
+              />
               <Info label="Entrega estimada" value={o.eta ?? "Por confirmar"} />
             </div>
 
@@ -64,25 +93,27 @@ export default function OrderSuccessPage({ order }: OrderSuccessPageProps) {
 
             {/* Items */}
             <div className="space-y-3">
-              {o.items.map((it: OrderItem) => (
-                <div
-                  key={it.id}
-                  className="grid grid-cols-[1fr_auto_auto] items-center gap-4 p-3 rounded-lg border"
-                >
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{it.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      x{it.qty} · {money(it.unitPrice)} c/u
-                    </p>
+              {orderResponse &&
+                isSuccess &&
+                orderResponse.data?.orderItems.map((it) => (
+                  <div
+                    key={it.id}
+                    className="grid grid-cols-[1fr_auto_auto] items-center gap-4 p-3 rounded-lg border"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{it.productName}</p>
+                      <p className="text-sm text-muted-foreground">
+                        x{it.quantity} · {money(it.unitPrice)} c/u
+                      </p>
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      Cant: {it.quantity}
+                    </span>
+                    <div className="text-right font-semibold tabular-nums">
+                      {money(it.subtotal)}
+                    </div>
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    Cant: {it.qty}
-                  </span>
-                  <div className="text-right font-semibold tabular-nums">
-                    {money(it.qty * it.unitPrice)}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <Separator />
@@ -91,7 +122,7 @@ export default function OrderSuccessPage({ order }: OrderSuccessPageProps) {
             <div className="flex items-center justify-between">
               <span className="text-base font-semibold">Total pagado</span>
               <span className="text-2xl font-extrabold tabular-nums">
-                {money(o.total)}
+                {money(orderResponse?.data?.totalAmount || 0)}
               </span>
             </div>
 
