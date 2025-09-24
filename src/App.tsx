@@ -6,6 +6,8 @@ import ShoppingCartPage from "./features/shopping-cart/pages/ShoppingCartPage";
 import CheckoutPage from "./features/checkout/pages/CheckoutPage";
 import OrdersListPage from "./features/orders/pages/OrdersListPage";
 import OrderSuccessPage from "./features/orders/pages/OrderSuccessPage";
+import UsersPage from "./features/users/pages/UsersPage";
+import AdminOrdersPage from "./features/admin-orders/pages/AdminOrdersPage";
 
 const App = () => {
   return (
@@ -17,6 +19,8 @@ const App = () => {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<OrdersListPage />} />
           <Route path="/orders/success/:id" element={<OrderSuccessPage />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/admin-orders" element={<AdminOrdersPage />} />
         </Route>
 
         <Route path="/" index element={<LoginPage />} />

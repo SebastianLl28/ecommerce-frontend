@@ -1,18 +1,23 @@
-// features/layout/Header.tsx
+// components/shared/header/Header.tsx
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { CartButton } from "@/features/shopping-cart/ui/CartButton";
 import { ViewOrdersButton } from "@/features/orders/ui/ViewOrdersButton";
+import { ViewUsersButton } from "@/features/users/ui/ViewUsersButton";
+import { ViewAdminOrdersButton } from "@/features/admin-orders/ui/ViewAdminOrdersButton";
 import { useCartCount, useSetCartCount } from "@/store/useCartStore";
 import LogoutButton from "@/features/auth/ui/LogoutButton";
 import { useGetCartInfo } from "@/features/shopping-cart/hooks";
 import ButtonFilter from "../filter/ui/ButtonFilter";
+import { useUser } from "@/store/authStore";
 
 export default function Header() {
   const navigate = useNavigate();
   const cartCount = useCartCount();
   const setCartCount = useSetCartCount();
   const { data: cartInfo, isSuccess } = useGetCartInfo();
+
+  const user = useUser();
 
   useEffect(() => {
     if (isSuccess && cartInfo?.success) {
@@ -34,7 +39,18 @@ export default function Header() {
 
         {/* Acciones */}
         <div className="flex items-center gap-3">
+          {/* Visible para todos */}
           <ViewOrdersButton onClick={() => navigate("/orders")} />
+
+          {/* Solo para ADMIN */}
+          {user?.role === "ADMIN" && (
+            <>
+              <ViewUsersButton onClick={() => navigate("/users")} />
+              <ViewAdminOrdersButton
+                onClick={() => navigate("/admin-orders")}
+              />
+            </>
+          )}
 
           <div className="hidden lg:block">
             <CartButton

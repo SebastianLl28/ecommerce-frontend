@@ -14,9 +14,13 @@ export const usePostLogin = () => {
     mutationFn: postLogin,
     onSuccess: (response: LoginResponse) => {
       if (response.success) {
-        login(response.data!);
         toast.success("Login Exitoso");
-        navigate("/products");
+        login(response.data!);
+        if (response.data?.role === "ADMIN") {
+          navigate("/users");
+        } else if (response.data?.role === "CUSTOMER") {
+          navigate("/products");
+        }
         return;
       }
       toast.error(response.message);

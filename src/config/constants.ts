@@ -50,3 +50,5 @@ export const mockTotals = {
   discount: 0,
   taxes: 0, // si no manejas IGV en esta vista, mantenlo 0
 };
+
+export const DEFAULT_USER_TEMP_PASSWORD = "password123";

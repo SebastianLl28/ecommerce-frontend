@@ -19,3 +19,4 @@ export const useIsAuthenticated = () =>
   useAuthStore((state) => state.isAuthenticated);
 export const useLogin = () => useAuthStore((state) => state.login);
 export const useAuthLogout = () => useAuthStore((state) => state.logout);
+export const useUser = () => useAuthStore((state) => state.user);
