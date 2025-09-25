@@ -19,7 +19,7 @@ npm i -g pnpm
 1. Clonar el repositorio:
 
 ```
-git clone [https://github.com/tu-usuario/ecommerce-frontend.git](https://github.com/SebastianLl28/ecommerce-frontend.git)
+git clone https://github.com/SebastianLl28/ecommerce-frontend.git
 cd ecommerce-frontend
 ```
 
